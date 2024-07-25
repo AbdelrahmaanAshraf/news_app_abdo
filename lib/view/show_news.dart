@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app_abdo/widgets/categories/categories_list_view.dart';
 import 'package:news_app_abdo/widgets/news_post/post_widget.dart';
@@ -18,6 +17,12 @@ class ShowNews extends StatefulWidget {
 }
 
 class _ShowNewsState extends State<ShowNews> {
+  var future;
+  @override
+  void initState() {
+    super.initState();
+    future = NewsCubit.get(context).getNews(category: 'General');
+  }
   @override
   Widget build(BuildContext context) {
     var cubit = NewsCubit.get(context);
@@ -39,36 +44,37 @@ class _ShowNewsState extends State<ShowNews> {
         ),
         centerTitle: true,
       ),
-      body: BlocProvider.value(
-
-        value: NewsCubit.get(context)..getNews(category: 'General'),
-        child: BlocConsumer<NewsCubit, NewsState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: CustomScrollView(
-                slivers: [
-                  const SliverToBoxAdapter(
-                    child: CategoriesListView(),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 30,
+      body: FutureBuilder(
+        future: cubit.getNews(category: 'General'),
+        builder: (context,snapshot){
+          return BlocConsumer<NewsCubit, NewsState>(
+            listener: (context, state) {},
+            builder: (context, state) {
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: CustomScrollView(
+                  slivers: [
+                    const SliverToBoxAdapter(
+                      child: CategoriesListView(),
                     ),
-                  ),
-                  SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                    childCount: cubit.newsModel?.articles?.length ?? 0,
-                    (context, index) => PostWidget(
-                        articles:
-                            cubit.newsModel?.articles?[index] ?? Articles()),
-                  )),
-                ],
-              ),
-            );
-          },
-        ),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 30,
+                      ),
+                    ),
+                    SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          childCount: cubit.newsModel?.articles?.length ?? 0,
+                              (context, index) => PostWidget(
+                              articles:
+                              cubit.newsModel?.articles?[index] ?? Articles()),
+                        )),
+                  ],
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
