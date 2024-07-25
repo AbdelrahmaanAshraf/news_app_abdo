@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app_abdo/widgets/categories/categories_list_view.dart';
 import 'package:news_app_abdo/widgets/news_post/post_widget.dart';
-
 import '../models/cubit/news_cubit.dart';
 import '../models/cubit/news_state.dart';
 import '../models/news_model.dart';
@@ -18,11 +17,13 @@ class ShowNews extends StatefulWidget {
 
 class _ShowNewsState extends State<ShowNews> {
   var future;
+
   @override
   void initState() {
     super.initState();
     future = NewsCubit.get(context).getNews(category: 'General');
   }
+
   @override
   Widget build(BuildContext context) {
     var cubit = NewsCubit.get(context);
@@ -46,7 +47,7 @@ class _ShowNewsState extends State<ShowNews> {
       ),
       body: FutureBuilder(
         future: cubit.getNews(category: 'General'),
-        builder: (context,snapshot){
+        builder: (context, snapshot) {
           return BlocConsumer<NewsCubit, NewsState>(
             listener: (context, state) {},
             builder: (context, state) {
@@ -63,12 +64,13 @@ class _ShowNewsState extends State<ShowNews> {
                       ),
                     ),
                     SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          childCount: cubit.newsModel?.articles?.length ?? 0,
-                              (context, index) => PostWidget(
-                              articles:
-                              cubit.newsModel?.articles?[index] ?? Articles()),
-                        )),
+                      delegate: SliverChildBuilderDelegate(
+                        childCount: cubit.newsModel?.articles?.length ?? 0,
+                        (context, index) => PostWidget(
+                            articles: cubit.newsModel?.articles?[index] ??
+                                Articles()),
+                      ),
+                    ),
                   ],
                 ),
               );
