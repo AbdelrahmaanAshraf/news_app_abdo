@@ -28,6 +28,7 @@ class CategoryView extends StatelessWidget {
               leading: IconButton(
                   onPressed: () {
                     Navigator.pop(context);
+                    cubit.getNews(category: 'General');
                   }, icon: const Icon(Icons.arrow_back)),
             ),
             body: const Padding(
